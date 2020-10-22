@@ -1,9 +1,3 @@
-#####################################################
-# https://github.com/vargaloid                      #
-# Install zabbix-agent-4.0                          #
-# For CentOS7; Debian 8, 9, 10; Ubuntu 16.04, 18.04 #
-# Version 0.07                                      #
-#####################################################
 ---
 - hosts: ubuntu_docker
   become: yes
