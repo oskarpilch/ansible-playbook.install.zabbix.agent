@@ -1,0 +1,12 @@
+---
+    zbx_srv: 10.10.12.5
+    centos7_link: https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
+    centos8_link: https://repo.zabbix.com/zabbix/5.0/rhel/8/x86_64/zabbix-release-5.0-1.el8.noarch.rpm
+    rhel7_link: https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
+    rhel8_link: https://repo.zabbix.com/zabbix/5.0/rhel/8/x86_64/zabbix-release-5.0-1.el8.noarch.rpm
+    ubuntu16_link: https://repo.zabbix.com/zabbix/5.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_5.0-1+xenial_all.deb
+    ubuntu16_file: zabbix-release_5.0-1+xenial_all.deb
+    ubuntu18_link: https://repo.zabbix.com/zabbix/5.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_5.0-1+bionic_all.deb
+    ubuntu18_file: zabbix-release_5.0-1+bionic_all.deb
+    ubuntu20_link: https://repo.zabbix.com/zabbix/5.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_5.0-1+focal_all.deb
+    ubuntu20_file: zabbix-release_5.0-1+focal_all.deb
