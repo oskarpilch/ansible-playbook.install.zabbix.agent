@@ -5,21 +5,10 @@
 # Version 0.07                                      #
 #####################################################
 ---
-- hosts: "{{ hosts }}"
+- hosts: ubuntu_docker
   become: yes
-#  remote_user: USERNAME
-  vars:
-    zbx_srv: 192.168.0.1
-    centos7_link: https://repo.zabbix.com/zabbix/4.4/rhel/7/x86_64/zabbix-release-4.4-1.el7.noarch.rpm
-    debian8_link: https://repo.zabbix.com/zabbix/4.4/debian/pool/main/z/zabbix-release/zabbix-release_4.4-1+jessie_all.deb
-    debian8_file: zabbix-release_4.4-1+jessie_all.deb
-    debian9_link: https://repo.zabbix.com/zabbix/4.4/debian/pool/main/z/zabbix-release/zabbix-release_4.4-1+stretch_all.deb
-    debian9_file: zabbix-release_4.4-1+stretch_all.deb
-    debian10_link: https://repo.zabbix.com/zabbix/4.4/debian/pool/main/z/zabbix-release/zabbix-release_4.4-1+buster_all.deb
-    debian10_file: zabbix-release_4.4-1+buster_all.deb
-    ubuntu16_link: https://repo.zabbix.com/zabbix/4.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_4.4-1+xenial_all.deb
-    ubuntu16_file: zabbix-release_4.4-1+xenial_all.deb
-    ubuntu18_link: https://repo.zabbix.com/zabbix/4.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_4.4-1+bionic_all.deb
-    ubuntu18_file: zabbix-release_4.4-1+bionic_all.deb
+  vars_files:
+    - inventory/group_vars/zabbix.agent/main.yml
+  
   roles:
-    - zabbix.agent
+    - roles/zabbix.agent
