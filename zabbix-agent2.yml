@@ -1,8 +1,8 @@
 ---
-- hosts: ubuntu_docker
+- hosts: zabbix_agent
   become: yes
   vars_files:
-    - ../inventory/group_vars/zabbix.agent/main.yml
+    - inventory/group_vars/zabbix.agent/main.yml
   
   roles:
-    - ../roles/zabbix.agent2
+    - roles/zabbix.agent2
