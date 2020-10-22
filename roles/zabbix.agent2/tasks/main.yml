@@ -1,0 +1,204 @@
+---
+##### Install zabbix-agent2
+- name: ping hosts
+  ping:
+
+- name: check OS
+  debug: msg={{ansible_distribution}}-{{ansible_distribution_version}}
+
+### centOS 7
+- name: disable SELinux
+  selinux:
+    state: disabled
+  when: (ansible_os_family == "CentOS" and ansible_distribution_major_version == "7")
+
+- name: install zabbix centOS 7 rpm file
+  yum:
+    name: "{{ centos7_link }}"
+  when: (ansible_os_family == "CentOS" and ansible_distribution_major_version == "7")
+
+- name: install zabbix-agent2 5.0 for centOS 7
+  yum: 
+    name: zabbix-agent2
+    enablerepo: zabbix
+    update_cache: true
+    state: latest
+  when: (ansible_os_family == "CentOS" and ansible_distribution_major_version == "7")
+
+### centOS 8
+- name: disable SELinux
+  selinux:
+    state: disabled
+  when: (ansible_os_family == "CentOS" and ansible_distribution_major_version == "8")
+
+- name: install zabbix centOS 8 rpm file
+  yum:
+    name: "{{ centos8_link }}"
+  when: (ansible_os_family == "CentOS" and ansible_distribution_major_version == "8")
+
+- name: install zabbix-agent2 5.0 for centOS 8
+  yum: 
+    name: zabbix-agent2
+    enablerepo: zabbix
+    update_cache: true
+    state: latest
+  when: (ansible_os_family == "CentOS" and ansible_distribution_major_version == "8")
+
+### rhel 7
+- name: disable SELinux
+  selinux:
+    state: disabled
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "7")
+
+- name: install zabbix RedHat 7 rpm file
+  yum:
+    name: "{{ rhel7_link }}"
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "7")
+
+- name: install zabbix-agent2 5.0 for RedHat 7
+  yum: 
+    name: zabbix-agent2
+    enablerepo: zabbix
+    update_cache: true
+    state: latest
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "7")
+
+### rhel 8
+- name: disable SELinux
+  selinux:
+    state: disabled
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "8")
+
+- name: install zabbix RedHat 8 rpm file
+  yum:
+    name: "{{ rhel8_link }}"
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "8")
+
+- name: install zabbix-agent2 5.0 for RedHat 8
+  yum: 
+    name: zabbix-agent2
+    enablerepo: zabbix
+    update_cache: true
+    state: latest
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "8")
+
+### Ubuntu 16.04 Xenial
+- name: download zabbix deb file fot Ubuntu 16.04
+  get_url:
+    url: "{{ ubuntu16_link }}"
+    dest: "/tmp/{{ ubuntu16_file }}"
+  when: ansible_distribution_release == 'xenial'
+
+- name: install zabbix deb for Ubuntu 16.04 Xenial
+  apt: deb="/tmp/{{ ubuntu16_file }}"
+  when: ansible_distribution_release == 'xenial'
+
+- name: install zabbix-agent2 5.0 Ubuntu 16.04
+  apt:
+    name: zabbix-agent2
+    state: latest
+    update_cache: yes
+  when: ansible_distribution_release == 'xenial'
+
+
+### Ubuntu 18.04 Bionic Beaver
+- name: download zabbix deb file fot Ubuntu 18.04
+  get_url:
+    url: "{{ ubuntu18_link }}"
+    dest: "/tmp/{{ ubuntu18_file }}"
+  when: ansible_distribution_release == 'bionic'
+
+- name: install zabbix deb for Ubuntu 18.04 Xenial
+  apt: deb="/tmp/{{ ubuntu18_file }}"
+  when: ansible_distribution_release == 'bionic'
+
+- name: install zabbix-agent2 5.0 Ubuntu 18.04
+  apt:
+    name: zabbix-agent2
+    state: latest
+    update_cache: yes
+  when: ansible_distribution_release == 'bionic'
+
+### Ubuntu 20.04 Bionic Beaver
+- name: download zabbix deb file fot Ubuntu 20.04
+  get_url:
+    url: "{{ ubuntu20_link }}"
+    dest: "/tmp/{{ ubuntu20_file }}"
+  when: ansible_distribution_release == 'focal'
+
+- name: install zabbix deb for Ubuntu 20.04 Focal
+  apt: deb="/tmp/{{ ubuntu20_file }}"
+  when: ansible_distribution_release == 'focal'
+
+- name: install zabbix-agent2 5.0 Ubuntu 20.04
+  apt:
+    name: zabbix-agent2
+    state: latest
+    update_cache: yes
+  when: ansible_distribution_release == 'focal'
+
+##### enabled zabbix-agent2
+- name: enable service zabbix-agent2 and ensure it is not masked
+  systemd:
+    name: zabbix-agent2
+    enabled: yes
+    masked: no
+  become: yes
+
+##### check zabbix home dir and shell
+- name: Make sure a service is stopped
+  systemd: state=stopped name=zabbix-agent2
+  become: yes
+
+- name: check zabbix home dir and shell
+  user:
+    name: zabbix
+    shell: /bin/bash
+    home: /etc/zabbix
+  become: yes
+
+##### mkdir /etc/zabbix/scripts and rights
+- name: mkdir /etc/zabbix/scripts and rights
+  file:
+    path: /etc/zabbix/scripts
+    state: directory
+    owner: zabbix
+    group: zabbix
+    mode: 0700
+  become: yes
+
+##### change zabbix_agentd.conf
+- name: change zabbix_agentd.conf Hostname
+  lineinfile:
+    path: /etc/zabbix/zabbix_agent2.conf
+    state: present
+    regexp: 'Hostname=Zabbix server'
+    line: "Hostname={{ ansible_hostname }}"
+  become: yes
+    
+- name: change zabbix_agentd.conf ServerActive
+  lineinfile:
+    path: /etc/zabbix/zabbix_agent2.conf
+    state: present
+    regexp: 'ServerActive=127.0.0.1'
+    line: "ServerActive={{ zbx_srv }}"
+  become: yes
+
+- name: change zabbix_agentd.conf Server
+  lineinfile:
+    path: /etc/zabbix/zabbix_agent2.conf
+    state: present
+    regexp: 'Server=127.0.0.1'
+    line: "Server=127.0.0.1,{{ zbx_srv }}"
+  become: yes
+
+- name: Adding user zabbix to docker group for monitoring
+  user:
+    name: "zabbix"
+    groups: "docker"
+    append: "yes"
+
+### Starting zabbix-agent
+- name: Make sure a service is started
+  systemd: state=started name=zabbix-agent2
+  become: yes
