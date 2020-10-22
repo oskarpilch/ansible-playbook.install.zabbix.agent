@@ -10,74 +10,77 @@
 - name: disable SELinux
   selinux:
     state: disabled
-  when: ansible_os_family == "RedHat"
+  when: (ansible_os_family == "CentOS" and ansible_distribution_major_version == "7")
 
 - name: install zabbix centOS 7 rpm file
   yum:
     name: "{{ centos7_link }}"
-  when: ansible_os_family == "RedHat"
+  when: (ansible_os_family == "CentOS" and ansible_distribution_major_version == "7")
 
-- name: install zabbix-agent 4.4 for centOS 7
+- name: install zabbix-agent 5.0 for centOS 7
   yum: 
     name: zabbix-agent
     enablerepo: zabbix
     update_cache: true
     state: latest
-  when: ansible_os_family == "RedHat"
+  when: (ansible_os_family == "CentOS" and ansible_distribution_major_version == "7")
 
-### Debian 8
-- name: download zabbix deb file for Debian 8
-  get_url:
-    url: "{{ debian8_link }}"
-    dest: "/tmp/{{ debian8_file }}"
-  when: ansible_distribution_release == 'jessie'
+### centOS 8
+- name: disable SELinux
+  selinux:
+    state: disabled
+  when: (ansible_os_family == "CentOS" and ansible_distribution_major_version == "8")
 
-- name: install zabbix deb in Debian 8
-  apt: deb="/tmp/{{ debian8_file }}"
-  when: ansible_distribution_release == 'jessie'
+- name: install zabbix centOS 8 rpm file
+  yum:
+    name: "{{ centos8_link }}"
+  when: (ansible_os_family == "CentOS" and ansible_distribution_major_version == "8")
 
-- name: install zabbix-agent 4.4 Debian 8
-  apt:
+- name: install zabbix-agent 5.0 for centOS 8
+  yum: 
     name: zabbix-agent
+    enablerepo: zabbix
+    update_cache: true
     state: latest
-    update_cache: yes
-  when: ansible_distribution_release == 'jessie'
+  when: (ansible_os_family == "CentOS" and ansible_distribution_major_version == "8")
 
-### Debian 9
-- name: download zabbix deb file for Debian 9
-  get_url:
-    url: "{{ debian9_link }}"
-    dest: "/tmp/{{ debian9_file }}"
-  when: ansible_distribution_release == 'stretch'
+### rhel 7
+- name: disable SELinux
+  selinux:
+    state: disabled
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "7")
 
-- name: install zabbix deb in Debian 9
-  apt: deb="/tmp/{{ debian9_file }}"
-  when: ansible_distribution_release == 'stretch'
+- name: install zabbix RedHat 7 rpm file
+  yum:
+    name: "{{ rhel7_link }}"
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "7")
 
-- name: install zabbix-agent 4.4 Debian 9
-  apt:
+- name: install zabbix-agent 5.0 for RedHat 7
+  yum: 
     name: zabbix-agent
+    enablerepo: zabbix
+    update_cache: true
     state: latest
-    update_cache: yes
-  when: ansible_distribution_release == 'stretch'
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "7")
 
-### Debian 10
-- name: download zabbix deb file for Debian 10
-  get_url:
-    url: "{{ debian10_link }}" 
-    dest: "/tmp/{{ debian10_file }}"
-  when: ansible_distribution_release == 'buster'
+### rhel 8
+- name: disable SELinux
+  selinux:
+    state: disabled
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "8")
 
-- name: install zabbix deb in Debian 10
-  apt: deb="/tmp/{{ debian10_file }}"
-  when: ansible_distribution_release == 'buster'
+- name: install zabbix RedHat 8 rpm file
+  yum:
+    name: "{{ rhel8_link }}"
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "8")
 
-- name: install zabbix-agent 4.4 Debian 10
-  apt:
+- name: install zabbix-agent 5.0 for RedHat 8
+  yum: 
     name: zabbix-agent
+    enablerepo: zabbix
+    update_cache: true
     state: latest
-    update_cache: yes
-  when: ansible_distribution_release == 'buster'
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "8")
 
 ### Ubuntu 16.04 Xenial
 - name: download zabbix deb file fot Ubuntu 16.04
@@ -90,7 +93,7 @@
   apt: deb="/tmp/{{ ubuntu16_file }}"
   when: ansible_distribution_release == 'xenial'
 
-- name: install zabbix-agent 4.4 Ubuntu 16.04
+- name: install zabbix-agent 5.0 Ubuntu 16.04
   apt:
     name: zabbix-agent
     state: latest
@@ -109,12 +112,30 @@
   apt: deb="/tmp/{{ ubuntu18_file }}"
   when: ansible_distribution_release == 'bionic'
 
-- name: install zabbix-agent 4.4 Ubuntu 18.04
+- name: install zabbix-agent 5.0 Ubuntu 18.04
   apt:
     name: zabbix-agent
     state: latest
     update_cache: yes
   when: ansible_distribution_release == 'bionic'
+
+### Ubuntu 20.04 Bionic Beaver
+- name: download zabbix deb file fot Ubuntu 20.04
+  get_url:
+    url: "{{ ubuntu20_link }}"
+    dest: "/tmp/{{ ubuntu20_file }}"
+  when: ansible_distribution_release == 'focal'
+
+- name: install zabbix deb for Ubuntu 20.04 Focal
+  apt: deb="/tmp/{{ ubuntu20_file }}"
+  when: ansible_distribution_release == 'focal'
+
+- name: install zabbix-agent 5.0 Ubuntu 20.04
+  apt:
+    name: zabbix-agent
+    state: latest
+    update_cache: yes
+  when: ansible_distribution_release == 'focal'
 
 ##### enabled zabbix-agent
 - name: enable service zabbix-agent and ensure it is not masked
@@ -149,7 +170,7 @@
 ##### change zabbix_agentd.conf
 - name: change zabbix_agentd.conf Hostname
   lineinfile:
-    path: /etc/zabbix/zabbix_agentd.conf
+    path: /etc/zabbix/zabbix_agent2.conf
     state: present
     regexp: 'Hostname=Zabbix server'
     line: "Hostname={{ ansible_hostname }}"
@@ -157,7 +178,7 @@
     
 - name: change zabbix_agentd.conf ServerActive
   lineinfile:
-    path: /etc/zabbix/zabbix_agentd.conf
+    path: /etc/zabbix/zabbix_agent.conf
     state: present
     regexp: 'ServerActive=127.0.0.1'
     line: "ServerActive={{ zbx_srv }}"
@@ -165,15 +186,15 @@
 
 - name: change zabbix_agentd.conf Server
   lineinfile:
-    path: /etc/zabbix/zabbix_agentd.conf
+    path: /etc/zabbix/zabbix_agent.conf
     state: present
     regexp: 'Server=127.0.0.1'
-    line: "Server={{ zbx_srv }}"
+    line: "Server=127.0.0.1,{{ zbx_srv }}"
   become: yes
 
 - name: change zabbix_agentd.conf EnableRemoteCommands
   lineinfile:
-    path: /etc/zabbix/zabbix_agentd.conf
+    path: /etc/zabbix/zabbix_agent.conf
     state: present
     regexp: '# EnableRemoteCommands=0'
     line: 'EnableRemoteCommands=1'
@@ -181,37 +202,16 @@
 
 - name: change zabbix_agentd.conf LogRemoteCommands
   lineinfile:
-    path: /etc/zabbix/zabbix_agentd.conf
+    path: /etc/zabbix/zabbix_agent.conf
     state: present
     regexp: '# LogRemoteCommands=0'
     line: 'LogRemoteCommands=1'
 
-##### Install Vulners plugin
-### CentOS7
-- name: install plugin repo centOS 7 rpm file
-  yum: name=https://repo.vulners.com/redhat/vulners-repo.rpm
-  when: ansible_os_family == "RedHat"
-
-- name: install plugin for centOS 7
-  yum: name=zabbix-threat-control-host
-  when: ansible_os_family == "RedHat"
-
-### Debian
-- name: download plugin deb file for Debian
-  get_url:
-    url: https://repo.vulners.com/debian/vulners-repo.deb
-    dest: /tmp/vulners-repo.deb
-  when: ansible_os_family == "Debian"
-
-- name: install plugin deb in Debian
-  apt: deb="/tmp/vulners-repo.deb"
-  when: ansible_os_family == "Debian"
-
-- name: install plugin Debian
-  apt:
-    name: zabbix-threat-control-host
-    update_cache: yes
-  when: ansible_os_family == "Debian"
+- name: Adding user zabbix to docker group for monitoring
+  user:
+    name: "zabbix"
+    groups: "docker"
+    append: "yes"
 
 ### Starting zabbix-agent
 - name: Make sure a service is started
